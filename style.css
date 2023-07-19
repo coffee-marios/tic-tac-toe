@@ -383,3 +383,26 @@ template {
 body {
     background-color: rgba(0, 0, 0, 0.293);
 }
+
+.main {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}
+
+#gameboard {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 5rem);
+
+    justify-items: stretch;
+    gap: 0;
+    background-color: chartreuse;
+
+}
+
+.block-board {
+    background-color: chocolate;
+    border: 2px solid seagreen;
+}
