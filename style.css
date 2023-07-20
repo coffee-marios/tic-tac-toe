@@ -405,4 +405,5 @@ body {
 .block-board {
     background-color: chocolate;
     border: 2px solid seagreen;
+    color: white;
 }
