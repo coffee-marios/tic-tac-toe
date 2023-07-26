@@ -3,23 +3,21 @@
 
   var gaming = {
     Gameboard: [2, 2],
-    players: function (name, turn = true, score = 3) {
-      this.turn = turn;
+    players: function (name, hits = [], score = 3) {
       this.score = score;
       this.name = name;
+      this.hits = hits;
       function addScore() {
         this.score += 3;
         return this.score;
       }
-      function giveBack() {
-        this.turn = !this.turn;
-        return () => this.turn;
-      }
-      return { turn, score, name, giveBack, addScore };
+
+      return { score, name, addScore, hits };
     },
 
     statistics: function () {
       this.Marios = this.players("Marios");
+      this.Marios.turn = true;
       this.Enemy = this.players("Enemy");
     },
 
@@ -36,10 +34,9 @@
         once: true,
       };
       const clickBlock = () => {
-        this.drawBlock(i);
+        this.drawOnBlock(i); // the 'i' comes from the loop in drawBoard
       };
       this.blockBoard.addEventListener("click", clickBlock, once);
-      // this.blockBoard.removeEventListener("click", clickBlock);
     },
 
     drawBoard: function () {
@@ -51,18 +48,29 @@
         this.bindEvents(this.blockBoard.dataset.idOfBlock);
       }
     },
-    drawBlock: function (i) {
+    drawOnBlock: function (i) {
       var getBlock = this.board.querySelector(`div[data-id-Of-Block='${i}']`);
 
-      console.log(`drawBlock: ${this.Marios.giveBack}`);
+      console.log(`drawOnBlock: ${getBlock.dataset.idOfBlock}`);
 
-      this.Marios.giveBack()()
-        ? (getBlock.innerText = "X")
-        : (getBlock.innerText = "O");
+      if (this.Marios.turn) {
+        getBlock.innerText = "X";
+        this.Marios.turn = false;
+        this.Marios.hits.push(getBlock.dataset.idOfBlock);
+        console.log("Marios made this move. Score:");
+        console.log(this.Marios.hits);
+      } else {
+        getBlock.innerText = "O";
+        this.Marios.turn = true;
+        this.Enemy.hits.push(getBlock.dataset.idOfBlock);
 
-      console.log(this.Marios.addScore());
+        console.log("The enemy made this move. Score:");
+        console.log(this.Enemy.hits);
+      }
 
-      console.log(getBlock);
+      //console.log(this.Marios.addScore());
+
+      //console.log(getBlock);
     },
   };
   gaming.init();
