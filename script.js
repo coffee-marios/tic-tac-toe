@@ -2,7 +2,16 @@
   console.log("OK");
 
   var gaming = {
-    Gameboard: [2, 2],
+    winningCombinations: [
+      ["0", "1", "2"],
+      ["3", "4", "5"],
+      ["6", "7", "8"],
+      ["0", "3", "6"],
+      ["1", "4", "7"],
+      ["2", "5", "8"],
+      ["0", "4", "8"],
+      ["2", "4", "6"],
+    ],
     players: function (name, hits = [], score = 3) {
       this.score = score;
       this.name = name;
@@ -53,24 +62,38 @@
 
       console.log(`drawOnBlock: ${getBlock.dataset.idOfBlock}`);
 
+      // What is wrong with this code:
+      function isArrayIncluded(nestedArray, targetArray) {
+        return nestedArray.some((subArray) => {
+          return subArray.every((element) => {
+            return targetArray.includes(element);
+          });
+        });
+      }
+
       if (this.Marios.turn) {
         getBlock.innerText = "X";
         this.Marios.turn = false;
         this.Marios.hits.push(getBlock.dataset.idOfBlock);
         console.log("Marios made this move. Score:");
-        console.log(this.Marios.hits);
+        //        console.log(this.Marios.hits);
+
+        if (isArrayIncluded(this.winningCombinations, this.Marios.hits)) {
+          console.log("Marios won");
+        } else {
+          console.log("Marios didn't win");
+        }
       } else {
         getBlock.innerText = "O";
         this.Marios.turn = true;
         this.Enemy.hits.push(getBlock.dataset.idOfBlock);
-
-        console.log("The enemy made this move. Score:");
-        console.log(this.Enemy.hits);
+        if (isArrayIncluded(this.winningCombinations, this.Enemy.hits)) {
+          console.log("Enemy won");
+          this.drawBoard();
+        } else {
+          console.log("Enemy didn't win");
+        }
       }
-
-      //console.log(this.Marios.addScore());
-
-      //console.log(getBlock);
     },
   };
   gaming.init();
