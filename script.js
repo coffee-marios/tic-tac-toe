@@ -28,6 +28,9 @@
 
       return { score, name, addScore, hits, resetScore };
     },
+    logic: function () {
+      this.gameContinues = true;
+    },
 
     statistics: function () {
       this.Marios = this.players("Marios");
@@ -48,7 +51,6 @@
       console.log(e.target.dataset.idOfBlock);
     },
 
-    // This doesn't seem to remove the event listener:
     bindEvents: function (singleBlock) {
       if (singleBlock.dataset.clicked === "true") {
         singleBlock.removeEventListener("click", this.clickBlockHandler);
@@ -61,14 +63,14 @@
 
     drawBoard: function () {
       for (let i = 0; i < 9; i++) {
-        this.blockBoard = document.createElement("div");
-        this.blockBoard.classList.add("block-board");
-        this.blockBoard.dataset.idOfBlock = i;
-        this.blockBoard.dataset.clicked = "false";
+        let blockBoard = document.createElement("div");
+        blockBoard.classList.add("block-board");
+        blockBoard.dataset.idOfBlock = i;
+        blockBoard.dataset.clicked = "false";
 
-        this.board.appendChild(this.blockBoard);
-        console.log(`First: ${this.blockBoard.dataset.idOfBlock}`);
-        this.bindEvents(this.blockBoard);
+        this.board.appendChild(blockBoard);
+        console.log(`First: ${blockBoard.dataset.idOfBlock}`);
+        this.bindEvents(blockBoard);
       }
     },
     drawOnBlock: function (singleBlock) {
@@ -78,7 +80,7 @@
       this.bindEvents(singleBlock);
 
       if (this.winner) {
-        // this.clearBoard();
+        this.clearBoard();
         this.winner = false;
         this.Marios.resetScore();
         this.Enemy.resetScore();
@@ -102,7 +104,6 @@
         this.Marios.turn = false;
         this.Marios.hits.push(singleBlock.dataset.idOfBlock);
         console.log("Marios made this move. Score:");
-        //        console.log(this.Marios.hits);
 
         if (isArrayIncluded(this.winningCombinations, this.Marios.hits)) {
           console.log("Marios won");
@@ -122,6 +123,8 @@
       for (let i = 0; i < 9; i++) {
         let getBlock = this.board.querySelector(`div[data-id-Of-Block='${i}']`);
         getBlock.innerText = "";
+        getBlock.dataset.clicked = "false";
+        this.bindEvents(getBlock);
       }
     },
   };
