@@ -13,7 +13,15 @@
       ["2", "4", "6"],
     ],
 
-    players: function (name, hits = [], winner = false, score = 3) {
+    players: function (
+      name,
+      hits = [],
+      winner = false,
+      score = 3,
+      endGame = false
+    ) {
+      this.endGame = endGame;
+
       this.score = score;
       this.name = name;
       this.hits = hits;
@@ -26,10 +34,11 @@
         this.hits = [];
       }
 
-      return { score, name, addScore, hits, resetScore };
+      return { score, name, addScore, hits, resetScore, endGame };
     },
     logic: function () {
-      this.gameContinues = true;
+      // this.endGame = endGame;
+      // return { endGame };
     },
 
     statistics: function () {
@@ -42,16 +51,35 @@
       this.cacheDom();
       this.drawBoard();
       this.statistics();
+      this.bindEvents();
+      this.logic();
     },
     cacheDom: function () {
       this.board = document.getElementById("gameboard");
+      this.userOneButton = document.getElementById("buttonUserOne");
+      this.userTwoButton = document.getElementById("buttonUserTwo");
     },
     clickBlockHandler: function (e) {
       gaming.drawOnBlock(e.target);
-      console.log(e.target.dataset.idOfBlock);
+    },
+    clickBoardHandler: function () {
+      let totalHits = gaming.Marios.hits.length + gaming.Enemy.hits.length;
+      console.log(1, gaming.endGame, totalHits);
+      if ((gaming.winner && gaming.endGame) || totalHits === 10) {
+        gaming.clearBoard();
+        gaming.winner = false;
+        gaming.Marios.resetScore();
+        gaming.Enemy.resetScore();
+        gaming.endGame = false;
+      } else if (gaming.winner) {
+        gaming.endGame = true;
+      }
+    },
+    bindEvents: function () {
+      this.board.addEventListener("click", this.clickBoardHandler);
     },
 
-    bindEvents: function (singleBlock) {
+    bindEventsBlocks: function (singleBlock) {
       if (singleBlock.dataset.clicked === "true") {
         singleBlock.removeEventListener("click", this.clickBlockHandler);
         console.log(3);
@@ -70,25 +98,11 @@
 
         this.board.appendChild(blockBoard);
         console.log(`First: ${blockBoard.dataset.idOfBlock}`);
-        this.bindEvents(blockBoard);
+        this.bindEventsBlocks(blockBoard);
       }
     },
     drawOnBlock: function (singleBlock) {
-      // singleBlock.dataset.clicked = "true";
-
-      console.log(singleBlock.dataset);
-      this.bindEvents(singleBlock);
-
-      if (this.winner) {
-        this.clearBoard();
-        this.winner = false;
-        this.Marios.resetScore();
-        this.Enemy.resetScore();
-        console.log(this.winner);
-        return;
-      }
-
-      console.log(`drawOnBlock: ${singleBlock.dataset.idOfBlock}`);
+      this.bindEventsBlocks(singleBlock);
 
       function isArrayIncluded(nestedArray, targetArray) {
         return nestedArray.some((subArray) => {
@@ -100,7 +114,6 @@
 
       if (this.Marios.turn) {
         singleBlock.innerText = "X";
-
         this.Marios.turn = false;
         this.Marios.hits.push(singleBlock.dataset.idOfBlock);
         console.log("Marios made this move. Score:");
@@ -124,7 +137,7 @@
         let getBlock = this.board.querySelector(`div[data-id-Of-Block='${i}']`);
         getBlock.innerText = "";
         getBlock.dataset.clicked = "false";
-        this.bindEvents(getBlock);
+        this.bindEventsBlocks(getBlock);
       }
     },
   };
