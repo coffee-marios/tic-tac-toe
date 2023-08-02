@@ -17,7 +17,7 @@
       name,
       hits = [],
       winner = false,
-      score = 3,
+      score = 0,
       endGame = false
     ) {
       this.endGame = endGame;
@@ -27,7 +27,7 @@
       this.hits = hits;
       this.winner = winner;
       function addScore() {
-        this.score += 3;
+        this.score += 1;
         return this.score;
       }
       function resetScore() {
@@ -58,6 +58,9 @@
       this.board = document.getElementById("gameboard");
       this.userOneButton = document.getElementById("buttonUserOne");
       this.userTwoButton = document.getElementById("buttonUserTwo");
+      this.scoreUserOne = document.getElementById("scoreUserOne");
+      this.scoreUserTwo = document.getElementById("scoreUserTwo");
+      this.playerTurnSignal = document.getElementById("playerTurnSignal");
     },
     clickBlockHandler: function (e) {
       gaming.drawOnBlock(e.target);
@@ -113,6 +116,9 @@
       }
 
       if (this.Marios.turn) {
+        this.playerTurnSignal.innerText = "Think before playing!";
+
+        this.Marios.turn = false;
         singleBlock.innerText = "X";
         this.Marios.turn = false;
         this.Marios.hits.push(singleBlock.dataset.idOfBlock);
@@ -120,14 +126,18 @@
 
         if (isArrayIncluded(this.winningCombinations, this.Marios.hits)) {
           console.log("Marios won");
+          this.scoreUserOne.innerText = this.Marios.addScore();
           this.winner = true;
         }
       } else {
+        this.playerTurnSignal.innerText = "Make a move!";
         singleBlock.innerText = "O";
         this.Marios.turn = true;
         this.Enemy.hits.push(singleBlock.dataset.idOfBlock);
         if (isArrayIncluded(this.winningCombinations, this.Enemy.hits)) {
           console.log("Enemy won");
+          this.scoreUserTwo.innerText = this.Enemy.addScore();
+
           this.winner = true;
         }
       }
