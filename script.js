@@ -12,15 +12,73 @@
       ["0", "4", "8"],
       ["2", "4", "6"],
     ],
+    computerMoves: function () {
+      this.Marios.turn = true;
+
+      let mariosLastMove = Number(
+        this.Marios.hits[this.Marios.hits.length - 1]
+      );
+
+      let mariosHitsNumbers = this.Computer.hits.map((x) => Number(x));
+      let computerHitsNumbers = this.Marios.hits.map((y) => Number(y));
+
+      let newArray = mariosHitsNumbers.concat(computerHitsNumbers);
+
+      function acceptedMove(number) {
+        if ((number < 0) | (number > 9)) {
+          return false;
+        }
+        if (newArray.includes(number)) {
+          return false;
+        }
+        return true;
+      }
+
+      function produceMoves(a) {
+        if (a > 22) {
+          return 0;
+        }
+        let randomBlockNumber = Math.floor(Math.random() * 9);
+        console.log(`try: ${randomBlockNumber}`);
+        let testMove = acceptedMove(randomBlockNumber);
+        if (testMove) {
+          return randomBlockNumber;
+        }
+
+        console.log("failed");
+
+        return produceMoves(a + 1);
+      }
+
+      this.playerTurnSignal.innerText = "Make a move!";
+      console.log("Com:");
+      console.log(`${newArray}, ${this.Marios.hits}`);
+      if (!newArray.includes(4)) {
+        this.Computer.hits.push("4");
+
+        let getBlock = this.board.querySelector(`div[data-id-Of-Block='4']`);
+        getBlock.innerText = "O";
+      } else if (newArray.length < 9) {
+        let nextMove = produceMoves(1);
+        this.Computer.hits.push(nextMove);
+        //console.log(`Next move ${nextMove}`);
+        let getBlock = this.board.querySelector(
+          `div[data-id-Of-Block='${nextMove}']`
+        );
+        getBlock.innerText = "O";
+      }
+    },
 
     players: function (
       name,
       hits = [],
       winner = false,
       score = 0,
-      endGame = false
+      endGame = false,
+      active = false
     ) {
       this.endGame = endGame;
+      this.active = active;
 
       this.score = score;
       this.name = name;
@@ -45,6 +103,8 @@
       this.Marios = this.players("Marios");
       this.Marios.turn = true;
       this.Enemy = this.players("Enemy");
+      this.Computer = this.players("Computer");
+      this.Computer.active = true;
     },
 
     init: function () {
@@ -73,6 +133,7 @@
         gaming.winner = false;
         gaming.Marios.resetScore();
         gaming.Enemy.resetScore();
+        gaming.Computer.resetScore();
         gaming.endGame = false;
       } else if (gaming.winner) {
         gaming.endGame = true;
@@ -85,7 +146,6 @@
     bindEventsBlocks: function (singleBlock) {
       if (singleBlock.dataset.clicked === "true") {
         singleBlock.removeEventListener("click", this.clickBlockHandler);
-        console.log(3);
       } else {
         singleBlock.addEventListener("click", this.clickBlockHandler);
         singleBlock.dataset.clicked = "true";
@@ -100,11 +160,14 @@
         blockBoard.dataset.clicked = "false";
 
         this.board.appendChild(blockBoard);
-        console.log(`First: ${blockBoard.dataset.idOfBlock}`);
+        //console.log(`First: ${blockBoard.dataset.idOfBlock}`);
         this.bindEventsBlocks(blockBoard);
       }
     },
     drawOnBlock: function (singleBlock) {
+      if (gaming.winner) {
+        return;
+      }
       this.bindEventsBlocks(singleBlock);
 
       function isArrayIncluded(nestedArray, targetArray) {
@@ -120,7 +183,7 @@
 
         this.Marios.turn = false;
         singleBlock.innerText = "X";
-        this.Marios.turn = false;
+
         this.Marios.hits.push(singleBlock.dataset.idOfBlock);
         console.log("Marios made this move. Score:");
 
@@ -129,9 +192,10 @@
           this.scoreUserOne.innerText = this.Marios.addScore();
           this.winner = true;
         }
-      } else {
+      } else if (!this.Computer.active) {
         this.playerTurnSignal.innerText = "Make a move!";
         singleBlock.innerText = "O";
+
         this.Marios.turn = true;
         this.Enemy.hits.push(singleBlock.dataset.idOfBlock);
         if (isArrayIncluded(this.winningCombinations, this.Enemy.hits)) {
@@ -140,7 +204,10 @@
 
           this.winner = true;
         }
+        return;
       }
+
+      this.computerMoves();
     },
     clearBoard: function () {
       for (let i = 0; i < 9; i++) {
