@@ -381,7 +381,7 @@ template {
 /* My CSS */
 
 body {
-    background-color: rgba(0, 0, 0, 0.293);
+    background-color: black;
 }
 
 .main {
@@ -397,8 +397,9 @@ body {
     grid-template-rows: repeat(3, 5rem);
 
     justify-items: stretch;
-    gap: 0;
-    background-color: chartreuse;
+    gap: 10px;
+    background-color: yellow;
+    border: 11px solid yellow;
 
 }
 
@@ -406,7 +407,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: chocolate;
-    border: 2px solid seagreen;
+    background-color: rgba(240, 245, 172, 0.982);
+    border: 1px solid black;
     color: white;
+    font-size: 1.5rem;
+    font-weight: bolder;
 }

@@ -264,6 +264,13 @@
       if (gaming.winner) {
         return;
       }
+
+      if (markMove === "X") {
+        singleBlock.style.color = "blue";
+      } else {
+        singleBlock.style.color = "red";
+      }
+
       singleBlock.innerText = markMove;
 
       singleBlock.dataset.clicked = "true";
