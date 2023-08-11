@@ -117,40 +117,67 @@
         if (this.Marios.turn) {
           this.drawOnBlock("X", blockUsed);
           this.Marios.hits.push(blockUsed.dataset.idOfBlock);
-          this.checkForWins(this.Marios, this.scoreUserOne);
+
           this.Marios.turn = false;
+          var checkContinue = this.checkForWins(this.Marios, this.scoreUserOne);
+
+          // We want to check if the user won before we ask the computer to move
+          if (!checkContinue && this.Computer.active && !this.endGame) {
+            var totalHits =
+              gaming.Marios.hits.length + gaming.Enemy.hits.length;
+
+            console.debug("debug");
+            if (totalHits == 9) {
+              return;
+            }
+            this.expectHumanMove = true;
+            this.Marios.turn = true;
+
+            let enemyHitsNumbers = this.Enemy.hits.map((x) => Number(x));
+            let mariosHitsNumbers = this.Marios.hits.map((y) => Number(y));
+            let newArray = mariosHitsNumbers.concat(enemyHitsNumbers);
+            console.log("computermoves send this array: ", newArray);
+            console.log("computermoves sends Enemy hits: ", gaming.Enemy.hits);
+
+            let computerBlock = this.produceMoves(1, newArray);
+            console.debug(computerBlock);
+
+            this.drawOnBlock("O", computerBlock);
+            this.Enemy.hits.push(computerBlock.dataset.idOfBlock);
+            this.checkForWins(this.Enemy, this.scoreUserTwo);
+            this.Marios.turn = true;
+          }
         } else if (!gaming.Computer.active) {
-          console.debug("i ma acktive");
           this.drawOnBlock("O", blockUsed);
           this.Enemy.hits.push(blockUsed.dataset.idOfBlock);
           this.checkForWins(gaming.Enemy, gaming.scoreUserTwo);
           this.Marios.turn = true;
         }
       }
-      if (this.Computer.active && !this.endGame) {
-        var totalHits = gaming.Marios.hits.length + gaming.Enemy.hits.length;
+      // if (this.Computer.active && !this.endGame) {
+      //   var totalHits = gaming.Marios.hits.length + gaming.Enemy.hits.length;
 
-        if (totalHits == 9) {
-          return;
-        }
+      //   if (totalHits == 9) {
+      //     return;
+      //   }
 
-        this.expectHumanMove = true;
-        this.Marios.turn = true;
+      //   this.expectHumanMove = true;
+      //   this.Marios.turn = true;
 
-        let enemyHitsNumbers = this.Enemy.hits.map((x) => Number(x));
-        let mariosHitsNumbers = this.Marios.hits.map((y) => Number(y));
-        let newArray = mariosHitsNumbers.concat(enemyHitsNumbers);
-        console.log("computermoves send this array: ", newArray);
-        console.log("computermoves sends Enemy hits: ", gaming.Enemy.hits);
+      //   let enemyHitsNumbers = this.Enemy.hits.map((x) => Number(x));
+      //   let mariosHitsNumbers = this.Marios.hits.map((y) => Number(y));
+      //   let newArray = mariosHitsNumbers.concat(enemyHitsNumbers);
+      //   console.log("computermoves send this array: ", newArray);
+      //   console.log("computermoves sends Enemy hits: ", gaming.Enemy.hits);
 
-        let computerBlock = this.produceMoves(1, newArray);
-        console.debug(computerBlock);
+      //   let computerBlock = this.produceMoves(1, newArray);
+      //   console.debug(computerBlock);
 
-        this.drawOnBlock("O", computerBlock);
-        this.Enemy.hits.push(computerBlock.dataset.idOfBlock);
-        this.checkForWins(this.Enemy, this.scoreUserTwo);
-        this.Marios.turn = true;
-      }
+      //   this.drawOnBlock("O", computerBlock);
+      //   this.Enemy.hits.push(computerBlock.dataset.idOfBlock);
+      //   this.checkForWins(this.Enemy, this.scoreUserTwo);
+      //   this.Marios.turn = true;
+      // }
     },
 
     clickBoardHandler: function () {
@@ -230,6 +257,7 @@
         this.playerTurnSignal.innerText = `${player.name} WON`;
         this.winner = true;
       }
+      return this.winner;
     },
 
     drawOnBlock: function (markMove, singleBlock) {
