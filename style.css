@@ -403,6 +403,9 @@ body {
 }
 
 .block-board {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: chocolate;
     border: 2px solid seagreen;
     color: white;
