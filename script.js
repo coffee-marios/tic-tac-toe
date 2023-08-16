@@ -109,9 +109,6 @@
       }
     },
 
-    // var mariosLastMove = Number(
-    //   gaming.Marios.hits[gaming.Marios.hits.length - 1]
-    // );
     regulateMoves: function (blockUsed) {
       if (this.expectHumanMove && !this.endGame) {
         if (this.Marios.turn) {
@@ -133,14 +130,38 @@
             this.expectHumanMove = true;
             this.Marios.turn = true;
 
-            let enemyHitsNumbers = this.Enemy.hits.map((x) => Number(x));
-            let mariosHitsNumbers = this.Marios.hits.map((y) => Number(y));
-            let newArray = mariosHitsNumbers.concat(enemyHitsNumbers);
+            var enemyHitsNumbers = this.Enemy.hits.map((x) => Number(x));
+            var mariosHitsNumbers = this.Marios.hits.map((y) => Number(y));
+            var newArray = mariosHitsNumbers.concat(enemyHitsNumbers);
             console.log("computermoves send this array: ", newArray);
             console.log("computermoves sends Enemy hits: ", gaming.Enemy.hits);
 
-            let computerBlock = this.produceMoves(1, newArray);
-            console.debug(computerBlock);
+            var goodDefensiveMove = this.isDangerousArray(
+              this.winningCombinations,
+              this.Marios.hits
+            );
+
+            var computerBlock;
+
+            if (goodDefensiveMove === 99) {
+              console.warn("Why?");
+              var goodAttackingMove = this.isDangerousArray(
+                this.winningCombinations,
+                this.Enemy.hits
+              );
+              if (goodAttackingMove === 99) {
+                computerBlock = this.produceMoves(1, newArray);
+              } else {
+                computerBlock = gaming.board.querySelector(
+                  `div[data-id-Of-Block='${goodAttackingMove}']`
+                );
+              }
+            } else {
+              console.warn("WTF?");
+              computerBlock = gaming.board.querySelector(
+                `div[data-id-Of-Block='${goodDefensiveMove}']`
+              );
+            }
 
             this.drawOnBlock("O", computerBlock);
             this.Enemy.hits.push(computerBlock.dataset.idOfBlock);
@@ -154,30 +175,6 @@
           this.Marios.turn = true;
         }
       }
-      // if (this.Computer.active && !this.endGame) {
-      //   var totalHits = gaming.Marios.hits.length + gaming.Enemy.hits.length;
-
-      //   if (totalHits == 9) {
-      //     return;
-      //   }
-
-      //   this.expectHumanMove = true;
-      //   this.Marios.turn = true;
-
-      //   let enemyHitsNumbers = this.Enemy.hits.map((x) => Number(x));
-      //   let mariosHitsNumbers = this.Marios.hits.map((y) => Number(y));
-      //   let newArray = mariosHitsNumbers.concat(enemyHitsNumbers);
-      //   console.log("computermoves send this array: ", newArray);
-      //   console.log("computermoves sends Enemy hits: ", gaming.Enemy.hits);
-
-      //   let computerBlock = this.produceMoves(1, newArray);
-      //   console.debug(computerBlock);
-
-      //   this.drawOnBlock("O", computerBlock);
-      //   this.Enemy.hits.push(computerBlock.dataset.idOfBlock);
-      //   this.checkForWins(this.Enemy, this.scoreUserTwo);
-      //   this.Marios.turn = true;
-      // }
     },
 
     clickBoardHandler: function () {
@@ -236,14 +233,48 @@
         this.bindEventsBlocks(blockBoard);
       }
     },
+    isDangerousArray: function (nestArray, playedMoves) {
+      var mappedArray = nestArray.map((array) => {
+        console.log(array[0], playedMoves);
+        if (
+          playedMoves.includes(array[0]) &&
+          playedMoves.includes(array[1]) &&
+          !this.Enemy.hits.includes(array[2])
+        ) {
+          console.warn("dangerous", array[2], true);
+          return array[2];
+        }
+        if (
+          playedMoves.includes(array[0]) &&
+          playedMoves.includes(array[2]) &&
+          !this.Enemy.hits.includes(array[1])
+        ) {
+          console.warn("dangerous", array[1], true);
+          return array[1];
+        }
+        if (
+          playedMoves.includes(array[1]) &&
+          playedMoves.includes(array[2]) &&
+          !this.Enemy.hits.includes(array[0])
+        ) {
+          console.warn("dangerous", array[0], true);
+          return array[0];
+        }
+        return false;
+      });
+
+      for (let i = 0; i < mappedArray.length; i++) {
+        if (mappedArray[i] !== false) {
+          return mappedArray[i];
+        }
+      }
+      return 99;
+    },
+
     isArrayIncluded: function (nestedArray, targetArray) {
       return nestedArray.some((subArray) => {
         return subArray.every((element) => {
           return targetArray.includes(element);
-          // if (targetArray.includes(element)) {
-          //   this.winningBlocks.push(element);
-          //   return true;
-          // }
         });
       });
     },
