@@ -14,6 +14,10 @@
     endGame: false,
     expectHumanMove: true,
     state: 0,
+    setGame: function (event) {
+      console.log(33);
+      event.preventDefault();
+    },
 
     players: function (
       name,
@@ -61,6 +65,7 @@
       this.scoreUserOne = document.getElementById("scoreUserOne");
       this.scoreUserTwo = document.getElementById("scoreUserTwo");
       this.playerTurnSignal = document.getElementById("playerTurnSignal");
+      this.buttonData = document.getElementById("buttonData");
     },
 
     /* if (this.Computer.active && !this.winner) {
@@ -211,6 +216,7 @@
     // Used for clearing the board
     bindEvents: function () {
       this.board.addEventListener("click", this.clickBoardHandler);
+      this.buttonData.addEventListener("click", this.setGame);
     },
     // Used only for human moves
     bindEventsBlocks: function (singleBlock) {
