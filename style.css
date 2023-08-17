@@ -384,11 +384,11 @@ body {
     background-color: black;
 }
 
-.main {
+#main {
     margin: auto;
     width: 50%;
     text-align: center;
-    /* display: none; */
+    display: none;
 }
 
 #personal-data>form {

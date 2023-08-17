@@ -15,8 +15,10 @@
     expectHumanMove: true,
     state: 0,
     setGame: function (event) {
-      console.log(33);
       event.preventDefault();
+
+      gaming.personalDataForm.style.display = "none";
+      gaming.mainElement.style.display = "block";
     },
 
     players: function (
@@ -59,6 +61,8 @@
       this.bindEvents();
     },
     cacheDom: function () {
+      this.mainElement = document.getElementById("main");
+      this.personalDataForm = document.getElementById("personal-data");
       this.board = document.getElementById("gameboard");
       this.userOneButton = document.getElementById("buttonUserOne");
       this.userTwoButton = document.getElementById("buttonUserTwo");
@@ -141,30 +145,35 @@
             console.log("computermoves send this array: ", newArray);
             console.log("computermoves sends Enemy hits: ", gaming.Enemy.hits);
 
-            var goodDefensiveMove = this.isDangerousArray(
+            var playedMoves = this.Enemy.hits.concat(this.Marios.hits);
+
+            var goodAttackingMove = this.isDangerousArray(
               this.winningCombinations,
-              this.Marios.hits
+              playedMoves,
+              this.Enemy.hits
             );
 
             var computerBlock;
 
-            if (goodDefensiveMove === 99) {
-              console.warn("Why?");
-              var goodAttackingMove = this.isDangerousArray(
+            if (goodAttackingMove === 99) {
+              console.warn("Not good attack");
+              var goodDefensiveMove = this.isDangerousArray(
                 this.winningCombinations,
-                this.Enemy.hits
+                playedMoves,
+                this.Marios.hits
               );
-              if (goodAttackingMove === 99) {
+              if (goodDefensiveMove === 99) {
                 computerBlock = this.produceMoves(1, newArray);
               } else {
                 computerBlock = gaming.board.querySelector(
-                  `div[data-id-Of-Block='${goodAttackingMove}']`
+                  `div[data-id-Of-Block='${goodDefensiveMove}']`
                 );
+                console.log("marios hits", this.Marios.hits);
               }
             } else {
               console.warn("WTF?");
               computerBlock = gaming.board.querySelector(
-                `div[data-id-Of-Block='${goodDefensiveMove}']`
+                `div[data-id-Of-Block='${goodAttackingMove}']`
               );
             }
 
@@ -239,29 +248,29 @@
         this.bindEventsBlocks(blockBoard);
       }
     },
-    isDangerousArray: function (nestArray, playedMoves) {
+    isDangerousArray: function (nestArray, playedMoves, playersMoves) {
       var mappedArray = nestArray.map((array) => {
         console.log(array[0], playedMoves);
         if (
-          playedMoves.includes(array[0]) &&
-          playedMoves.includes(array[1]) &&
-          !this.Enemy.hits.includes(array[2])
+          playersMoves.includes(array[0]) &&
+          playersMoves.includes(array[1]) &&
+          !playedMoves.includes(array[2])
         ) {
           console.warn("dangerous", array[2], true);
           return array[2];
         }
         if (
-          playedMoves.includes(array[0]) &&
-          playedMoves.includes(array[2]) &&
-          !this.Enemy.hits.includes(array[1])
+          playersMoves.includes(array[0]) &&
+          playersMoves.includes(array[2]) &&
+          !playedMoves.includes(array[1])
         ) {
           console.warn("dangerous", array[1], true);
           return array[1];
         }
         if (
-          playedMoves.includes(array[1]) &&
-          playedMoves.includes(array[2]) &&
-          !this.Enemy.hits.includes(array[0])
+          playersMoves.includes(array[1]) &&
+          playersMoves.includes(array[2]) &&
+          !playedMoves.includes(array[0])
         ) {
           console.warn("dangerous", array[0], true);
           return array[0];
