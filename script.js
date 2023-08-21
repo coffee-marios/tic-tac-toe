@@ -14,11 +14,25 @@
     endGame: false,
     expectHumanMove: true,
     state: 0,
+    totalGames: 0,
+    endMatch: false,
+
     setGame: function (event) {
       event.preventDefault();
 
       gaming.personalDataForm.style.display = "none";
       gaming.mainElement.style.display = "block";
+      console.log("number of games", gaming.setOfGames.value);
+      if (gaming.typeAIhumanGame.value === "computer") {
+        gaming.Computer.active = true;
+      }
+
+      if (gaming.formNameUser.value !== "") {
+        gaming.displayedNameUser.innerText = `${gaming.formNameUser.value}:  `;
+      }
+      if (gaming.formNameEnemy.value !== "") {
+        gaming.displayedNameEnemy.innerText = `${gaming.formNameEnemy.value}:  `;
+      }
     },
 
     players: function (
@@ -39,11 +53,11 @@
         this.score += 1;
         return this.score;
       }
-      function resetScore() {
+      function resetHitsArray() {
         this.hits = [];
       }
 
-      return { score, name, addScore, hits, resetScore };
+      return { score, name, addScore, hits, resetHitsArray };
     },
 
     statistics: function () {
@@ -51,7 +65,6 @@
       this.Marios.turn = true;
       this.Enemy = this.players("Enemy");
       this.Computer = this.players("Computer");
-      this.Computer.active = true;
     },
 
     init: function () {
@@ -62,7 +75,15 @@
     },
     cacheDom: function () {
       this.mainElement = document.getElementById("main");
+
       this.personalDataForm = document.getElementById("personal-data");
+      this.formNameUser = document.getElementById("fname1");
+      this.displayedNameUser = document.getElementById("namePlayerOne");
+      this.formNameEnemy = document.getElementById("fname2");
+      this.displayedNameEnemy = document.getElementById("namePlayerTwo");
+      this.setOfGames = document.getElementById("numberGames");
+      this.typeAIhumanGame = document.getElementById("typeGame");
+
       this.board = document.getElementById("gameboard");
       this.userOneButton = document.getElementById("buttonUserOne");
       this.userTwoButton = document.getElementById("buttonUserTwo");
@@ -119,6 +140,13 @@
     },
 
     regulateMoves: function (blockUsed) {
+      console.log("reg: total games", this.totalGames);
+      console.log("reg: End of set: ", this.endMatch);
+      // if (this.endMatch) {
+      //   console.log("End OF Match");
+      //   return;
+      // }
+
       if (this.expectHumanMove && !this.endGame) {
         if (this.Marios.turn) {
           this.drawOnBlock("X", blockUsed);
@@ -193,7 +221,12 @@
 
     clickBoardHandler: function () {
       var totalHits = gaming.Marios.hits.length + gaming.Enemy.hits.length;
-      console.warn("total hits ", totalHits);
+
+      console.log("board: End OF Match", gaming.endMatch);
+
+      console.log("set games number: ", gaming.setOfGames.value);
+      console.log("board: total games", gaming.totalGames);
+      console.log("board: End of set: ", gaming.endMatch);
 
       if (!gaming.winner && totalHits < 9) {
         console.log("I stop at the board");
@@ -204,18 +237,24 @@
         (gaming.winner && gaming.endGame) ||
         (totalHits == 9 && gaming.endGame)
       ) {
-        console.log("total hits that clear: ", totalHits);
-        console.log("marios hits: ", gaming.Marios.hits);
-        console.log("enemy hits: ", gaming.Enemy.hits);
-        console.warn("gaming winner: ", gaming.winner);
-
+        // console.log("total hits that clear: ", totalHits);
+        // console.log("marios hits: ", gaming.Marios.hits);
+        // console.log("enemy hits: ", gaming.Enemy.hits);
+        // console.warn("gaming winner: ", gaming.winner);
+        gaming.totalGames += 1;
+        console.log("I expect +=1");
         gaming.clearBoard();
         gaming.winner = false;
-        gaming.Marios.resetScore();
-        gaming.Enemy.resetScore();
-        gaming.Computer.resetScore();
+        gaming.Marios.resetHitsArray();
+        gaming.Enemy.resetHitsArray();
+        gaming.Computer.resetHitsArray();
         gaming.endGame = false;
         gaming.Marios.turn = true;
+        if (gaming.totalGames >= gaming.setOfGames.value) {
+          gaming.endGame = true;
+          gaming.endMatch = true;
+          console.log("End OF Match condition", gaming.endMatch);
+        }
       } else if (gaming.winner || totalHits == 9) {
         gaming.endGame = true;
 
@@ -246,6 +285,34 @@
 
         this.board.appendChild(blockBoard);
         this.bindEventsBlocks(blockBoard);
+      }
+    },
+
+    drawOnBlock: function (markMove, singleBlock) {
+      if (gaming.winner) {
+        return;
+      }
+
+      if (markMove === "X") {
+        singleBlock.style.color = "blue";
+      } else {
+        singleBlock.style.color = "red";
+      }
+
+      singleBlock.innerText = markMove;
+
+      singleBlock.dataset.clicked = "true";
+      this.bindEventsBlocks(singleBlock);
+    },
+
+    clearBoard: function () {
+      for (let i = 0; i < 9; i++) {
+        let getBlock = this.board.querySelector(`div[data-id-Of-Block='${i}']`);
+        getBlock.innerText = "";
+        this.playerTurnSignal.innerText = `Game goes on!`;
+
+        getBlock.dataset.clicked = "false";
+        this.bindEventsBlocks(getBlock);
       }
     },
     isDangerousArray: function (nestArray, playedMoves, playersMoves) {
@@ -304,34 +371,6 @@
         this.winner = true;
       }
       return this.winner;
-    },
-
-    drawOnBlock: function (markMove, singleBlock) {
-      if (gaming.winner) {
-        return;
-      }
-
-      if (markMove === "X") {
-        singleBlock.style.color = "blue";
-      } else {
-        singleBlock.style.color = "red";
-      }
-
-      singleBlock.innerText = markMove;
-
-      singleBlock.dataset.clicked = "true";
-      this.bindEventsBlocks(singleBlock);
-    },
-
-    clearBoard: function () {
-      for (let i = 0; i < 9; i++) {
-        let getBlock = this.board.querySelector(`div[data-id-Of-Block='${i}']`);
-        getBlock.innerText = "";
-        this.playerTurnSignal.innerText = `Game goes on!`;
-
-        getBlock.dataset.clicked = "false";
-        this.bindEventsBlocks(getBlock);
-      }
     },
   };
   gaming.init();
