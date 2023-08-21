@@ -34,6 +34,18 @@
         gaming.displayedNameEnemy.innerText = `${gaming.formNameEnemy.value}:  `;
       }
     },
+    restartGame: function () {
+      console.clear();
+      console.log("restart");
+      gaming.totalGames = 0;
+      gaming.expectHumanMove = true;
+      gaming.endGame = false;
+      gaming.endMatch = false;
+      gaming.Marios.score = 0;
+      gaming.Enemy.score = 0;
+      gaming.scoreUserOne.innerText = "0";
+      gaming.scoreUserTwo.innerText = "0";
+    },
 
     players: function (
       name,
@@ -83,6 +95,8 @@
       this.displayedNameEnemy = document.getElementById("namePlayerTwo");
       this.setOfGames = document.getElementById("numberGames");
       this.typeAIhumanGame = document.getElementById("typeGame");
+
+      this.restart = document.getElementById("buttonRestart");
 
       this.board = document.getElementById("gameboard");
       this.userOneButton = document.getElementById("buttonUserOne");
@@ -265,6 +279,7 @@
     bindEvents: function () {
       this.board.addEventListener("click", this.clickBoardHandler);
       this.buttonData.addEventListener("click", this.setGame);
+      this.restart.addEventListener("click", this.restartGame);
     },
     // Used only for human moves
     bindEventsBlocks: function (singleBlock) {
