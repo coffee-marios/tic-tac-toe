@@ -34,17 +34,26 @@
         gaming.displayedNameEnemy.innerText = `${gaming.formNameEnemy.value}:  `;
       }
     },
+    cleanSheet: function () {
+      this.clearBoard();
+      this.winner = false;
+      this.Marios.resetHitsArray();
+      this.Enemy.resetHitsArray();
+      this.Computer.resetHitsArray();
+      this.endGame = false;
+      this.Marios.turn = true;
+    },
     restartGame: function () {
-      console.clear();
-      console.log("restart");
-      gaming.totalGames = 0;
       gaming.expectHumanMove = true;
-      gaming.endGame = false;
       gaming.endMatch = false;
+      gaming.totalGames = 0;
       gaming.Marios.score = 0;
       gaming.Enemy.score = 0;
       gaming.scoreUserOne.innerText = "0";
       gaming.scoreUserTwo.innerText = "0";
+      console.clear();
+      console.log("restart");
+      gaming.cleanSheet();
     },
 
     players: function (
@@ -251,19 +260,9 @@
         (gaming.winner && gaming.endGame) ||
         (totalHits == 9 && gaming.endGame)
       ) {
-        // console.log("total hits that clear: ", totalHits);
-        // console.log("marios hits: ", gaming.Marios.hits);
-        // console.log("enemy hits: ", gaming.Enemy.hits);
-        // console.warn("gaming winner: ", gaming.winner);
         gaming.totalGames += 1;
         console.log("I expect +=1");
-        gaming.clearBoard();
-        gaming.winner = false;
-        gaming.Marios.resetHitsArray();
-        gaming.Enemy.resetHitsArray();
-        gaming.Computer.resetHitsArray();
-        gaming.endGame = false;
-        gaming.Marios.turn = true;
+        gaming.cleanSheet();
         if (gaming.totalGames >= gaming.setOfGames.value) {
           gaming.endGame = true;
           gaming.endMatch = true;
