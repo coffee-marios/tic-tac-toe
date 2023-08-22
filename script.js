@@ -28,10 +28,10 @@
       }
 
       if (gaming.formNameUser.value !== "") {
-        gaming.displayedNameUser.innerText = `${gaming.formNameUser.value}:  `;
+        gaming.displayedNameUser.innerText = `${gaming.formNameUser.value.toUpperCase()}  `;
       }
       if (gaming.formNameEnemy.value !== "") {
-        gaming.displayedNameEnemy.innerText = `${gaming.formNameEnemy.value}:  `;
+        gaming.displayedNameEnemy.innerText = `${gaming.formNameEnemy.value.toUpperCase()}  `;
       }
     },
     cleanSheet: function () {

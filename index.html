@@ -28,25 +28,32 @@
 
             <label for="fnumberGames">Number of games</label>
             <input type="number" id="numberGames" name="numberGames" value="1" min="1" max="100"> <br><br>
-            <button id="buttonData">Click</button>
+            <button id="buttonData">Start</button>
         </form>
     </div>
 
     <div id="main">
+
         <p id="playerTurnSignal">This is a test</p>
 
+        <div id="container">
+            <div id="leftPlayer">
+                <button id="buttonUserOne"><span id="namePlayerOne">PLAYER 1</span> </button>
+                <p id="scoreUserOne">0</p>
 
 
-        <div id="gameboard"></div>
+            </div>
+            <div id="gameboard"></div>
 
-        <br>
 
-        <div id="buttonsPlayers">
-            <button id="buttonUserOne"><span id="namePlayerOne">Player 1:</span> <span
-                    id="scoreUserOne">0</span></button>
-            <button id="buttonUserTwo"><span id="namePlayerTwo">Player 2:</span> <span
-                    id="scoreUserTwo">0</span></button>
+
+            <div id="rightPlayer">
+                <button id="buttonUserTwo"><span id="namePlayerTwo">PLAYER 2</span> </button>
+                <p id="scoreUserTwo">0</p>
+
+            </div>
         </div>
+
         <div id="restart">
             <button id="buttonRestart">Restart</button>
         </div>
