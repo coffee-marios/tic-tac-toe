@@ -22,12 +22,14 @@
             <input type="text" id="fname2" name="fname2"><br><br>
             <label for="ftype">Type of game</label><br>
             <select name="typeGame" id="typeGame">
-                <option value="human">Human VS Human</option>
                 <option value="computer">Human VS Computer</option>
+                <option value="human">Human VS Human</option>
+
+
             </select> <br><br>
 
             <label for="fnumberGames">Number of games</label>
-            <input type="number" id="numberGames" name="numberGames" value="1" min="1" max="100"> <br><br>
+            <input type="number" id="numberGames" name="numberGames" value="3" min="1" max="100"> <br><br>
             <button id="buttonData">Start</button>
         </form>
     </div>
@@ -35,7 +37,7 @@
     <div id="main">
 
         <div id="sideButtons">
-            <div><button class="sideSettings">SETTINGS</button></div>
+            <div><button class="sideSettings" id="gameSettings">SETTINGS</button></div>
             <div><button class="sideSettings" id="buttonRestart">RESTART</button></div>
         </div>
 

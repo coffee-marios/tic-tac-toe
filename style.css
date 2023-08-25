@@ -388,10 +388,15 @@ body {
     margin: auto;
     width: 50%;
     text-align: center;
+    /* display: none; */
+}
+
+#personal-data {
     display: none;
 }
 
 #personal-data>form {
+
 
     background-color: yellowgreen;
     max-width: fit-content;

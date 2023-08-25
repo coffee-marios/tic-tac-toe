@@ -17,9 +17,16 @@
     totalGames: 0,
     endMatch: false,
 
+    getFormSettings: function () {
+      console.log(33433);
+      gaming.mainElement.style.display = "none";
+      gaming.personalDataForm.style.display = "block";
+    },
+
     setGame: function (event) {
       event.preventDefault();
       gaming.state += 1;
+      gaming.restartGame();
       gaming.personalDataForm.style.display = "none";
       gaming.mainElement.style.display = "block";
       console.log("number of games", gaming.setOfGames.value);
@@ -84,7 +91,7 @@
         this.hits = [];
       }
 
-      return { score, name, addScore, hits, resetHitsArray };
+      return { active, score, name, addScore, hits, resetHitsArray };
     },
 
     statistics: function () {
@@ -93,6 +100,7 @@
       this.Marios.turn = true;
       this.Enemy = this.players("Player 2");
       this.Computer = this.players("Computer");
+      console.log("statist,", this.Computer.active);
     },
 
     init: function () {
@@ -103,6 +111,8 @@
     },
     cacheDom: function () {
       this.mainElement = document.getElementById("main");
+
+      this.settingsGame = document.getElementById("gameSettings");
 
       this.personalDataForm = document.getElementById("personal-data");
       this.formNameUser = document.getElementById("fname1");
@@ -122,10 +132,6 @@
       this.playerTurnSignal = document.getElementById("playerTurnSignal");
       this.buttonData = document.getElementById("buttonData");
     },
-
-    /* if (this.Computer.active && !this.winner) {
-      setTimeout(this.computerMoves, 1100);
-    } */
 
     // Test number produced by the computer for potential move
     acceptedMove: function (number, allHits) {
@@ -277,6 +283,7 @@
       this.board.addEventListener("click", this.clickBoardHandler);
       this.buttonData.addEventListener("click", this.setGame);
       this.restart.addEventListener("click", this.restartGame);
+      this.settingsGame.addEventListener("click", this.getFormSettings);
     },
     // Used only for human moves
     bindEventsBlocks: function (singleBlock) {
