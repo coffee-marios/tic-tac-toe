@@ -439,16 +439,61 @@ body {
 }
 
 #container>#leftPlayer {
-    background-color: blanchedalmond;
+    background-color: chartreuse;
     text-align: center;
     align-self: flex-start;
     margin-right: 5%;
 }
 
 #container>#rightPlayer {
-    background-color: blanchedalmond;
-
+    background-color: rgb(4, 4, 249);
     text-align: center;
     align-self: flex-start;
     margin-left: 5%;
+}
+
+#namePlayerOne,
+#namePlayerTwo {
+    font-size: 1.2rem;
+    font-family: 'Courier New', Courier, monospace;
+    color: aliceblue;
+
+}
+
+#scoreUserOne,
+#scoreUserTwo {
+    font-size: 1.8rem;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: bolder;
+    color: whitesmoke;
+}
+
+#buttonUserOne {
+    background-color: green;
+    padding: 5px;
+}
+
+#buttonUserTwo {
+    background-color: rgba(6, 6, 144, 0.753);
+    padding: 5px;
+}
+
+div>#leftPlayer {
+    background-color: rgba(128, 255, 0, 0.9);
+}
+
+.sideSettings {
+    background-color: darkmagenta;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: white;
+    margin-bottom: 3rem;
+}
+
+#sideButtons {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+
 }

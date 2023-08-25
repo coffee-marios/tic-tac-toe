@@ -19,7 +19,7 @@
 
     setGame: function (event) {
       event.preventDefault();
-
+      gaming.state += 1;
       gaming.personalDataForm.style.display = "none";
       gaming.mainElement.style.display = "block";
       console.log("number of games", gaming.setOfGames.value);
@@ -28,10 +28,16 @@
       }
 
       if (gaming.formNameUser.value !== "") {
-        gaming.displayedNameUser.innerText = `${gaming.formNameUser.value.toUpperCase()}  `;
+        console.log(gaming.firstPlayerName);
+        var firstPlayerName = gaming.formNameUser.value.toUpperCase();
+        gaming.displayedNameUser.innerText = `${firstPlayerName}  `;
+        gaming.Marios.name = firstPlayerName;
+        console.log("setting", firstPlayerName, this.state);
       }
       if (gaming.formNameEnemy.value !== "") {
-        gaming.displayedNameEnemy.innerText = `${gaming.formNameEnemy.value.toUpperCase()}  `;
+        var secondPlayerName = gaming.formNameEnemy.value.toUpperCase();
+        gaming.displayedNameEnemy.innerText = `${secondPlayerName}  `;
+        gaming.Enemy.name = secondPlayerName;
       }
     },
     cleanSheet: function () {
@@ -82,9 +88,10 @@
     },
 
     statistics: function () {
-      this.Marios = this.players("Marios");
+      this.Marios = this.players(`Player 1`);
+      console.log("state", this.state);
       this.Marios.turn = true;
-      this.Enemy = this.players("Enemy");
+      this.Enemy = this.players("Player 2");
       this.Computer = this.players("Computer");
     },
 
@@ -165,10 +172,6 @@
     regulateMoves: function (blockUsed) {
       console.log("reg: total games", this.totalGames);
       console.log("reg: End of set: ", this.endMatch);
-      // if (this.endMatch) {
-      //   console.log("End OF Match");
-      //   return;
-      // }
 
       if (this.expectHumanMove && !this.endGame) {
         if (this.Marios.turn) {
@@ -245,12 +248,6 @@
     clickBoardHandler: function () {
       var totalHits = gaming.Marios.hits.length + gaming.Enemy.hits.length;
 
-      console.log("board: End OF Match", gaming.endMatch);
-
-      console.log("set games number: ", gaming.setOfGames.value);
-      console.log("board: total games", gaming.totalGames);
-      console.log("board: End of set: ", gaming.endMatch);
-
       if (!gaming.winner && totalHits < 9) {
         console.log("I stop at the board");
         return;
@@ -266,6 +263,7 @@
         if (gaming.totalGames >= gaming.setOfGames.value) {
           gaming.endGame = true;
           gaming.endMatch = true;
+          gaming.showResultTop();
           console.log("End OF Match condition", gaming.endMatch);
         }
       } else if (gaming.winner || totalHits == 9) {
@@ -323,7 +321,7 @@
       for (let i = 0; i < 9; i++) {
         let getBlock = this.board.querySelector(`div[data-id-Of-Block='${i}']`);
         getBlock.innerText = "";
-        this.playerTurnSignal.innerText = `Game goes on!`;
+        this.playerTurnSignal.innerText = `Tic - Tac - Toe`;
 
         getBlock.dataset.clicked = "false";
         this.bindEventsBlocks(getBlock);
@@ -381,10 +379,25 @@
     checkForWins: function (player, domElement) {
       if (gaming.isArrayIncluded(this.winningCombinations, player.hits)) {
         domElement.innerText = player.addScore();
-        this.playerTurnSignal.innerText = `${player.name} WON`;
+        this.playerTurnSignal.innerText = `${player.name} WON this game!`;
         this.winner = true;
       }
       return this.winner;
+    },
+    showResultTop: function () {
+      console.clear();
+      console.log(this.Marios);
+      var finalVerdict;
+      if (this.Marios.score > this.Enemy.score) {
+        finalVerdict = `${this.Marios.name} won the match!`;
+      }
+      if (this.Enemy.score > this.Marios.score) {
+        finalVerdict = `${this.Enemy.name} won the match!`;
+      }
+      if (this.Enemy.score == this.Marios.score) {
+        finalVerdict = `The match ended in a draw`;
+      }
+      this.playerTurnSignal.innerText = finalVerdict;
     },
   };
   gaming.init();
