@@ -502,3 +502,19 @@ div>#leftPlayer {
     left: 30px;
 
 }
+
+#lastSignal {
+    background-color: darkred;
+    border-radius: 10px;
+    text-align: center;
+    width: 50%;
+    margin: auto;
+    color: white;
+    /* font-size: 1.5rem; */
+    /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
+}
+
+#gameNumber {
+    padding: 5px;
+    letter-spacing: 2px;
+}

@@ -17,6 +17,13 @@
     totalGames: 0,
     endMatch: false,
 
+    set setTotalGames(games) {
+      this.totalGames = games;
+    },
+    get currentGame() {
+      return this.totalGames + 1;
+    },
+
     getFormSettings: function () {
       console.log(33433);
       gaming.mainElement.style.display = "none";
@@ -59,11 +66,12 @@
     restartGame: function () {
       gaming.expectHumanMove = true;
       gaming.endMatch = false;
-      gaming.totalGames = 0;
+      gaming.setTotalGames = 0;
       gaming.Marios.score = 0;
       gaming.Enemy.score = 0;
       gaming.scoreUserOne.innerText = "0";
       gaming.scoreUserTwo.innerText = "0";
+      gaming.showNumberGame.innerText = gaming.currentGame;
       console.clear();
       console.log("restart");
       gaming.cleanSheet();
@@ -74,7 +82,6 @@
       hits = [],
       winner = false,
       score = 0,
-
       active = true
     ) {
       this.active = active;
@@ -131,6 +138,8 @@
       this.scoreUserTwo = document.getElementById("scoreUserTwo");
       this.playerTurnSignal = document.getElementById("playerTurnSignal");
       this.buttonData = document.getElementById("buttonData");
+
+      this.showNumberGame = document.getElementById("numberGame");
     },
 
     // Test number produced by the computer for potential move
@@ -176,8 +185,8 @@
     },
 
     regulateMoves: function (blockUsed) {
-      console.log("reg: total games", this.totalGames);
-      console.log("reg: End of set: ", this.endMatch);
+      // console.log("reg: total games");
+      // console.log("reg: End of set: ", this.endMatch);
 
       if (this.expectHumanMove && !this.endGame) {
         if (this.Marios.turn) {
@@ -248,6 +257,11 @@
           this.checkForWins(gaming.Enemy, gaming.scoreUserTwo);
           this.Marios.turn = true;
         }
+
+        // if (this.totalHits == 9) {
+        //   var gamesPlayed = this.totalGames + 2;
+        //   this.showNumberGame.innerText = gamesPlayed;
+        // }
       }
     },
 
@@ -264,7 +278,7 @@
         (totalHits == 9 && gaming.endGame)
       ) {
         gaming.totalGames += 1;
-        console.log("I expect +=1");
+
         gaming.cleanSheet();
         if (gaming.totalGames >= gaming.setOfGames.value) {
           gaming.endGame = true;
@@ -311,6 +325,12 @@
       if (gaming.winner) {
         return;
       }
+
+      // ...
+      // var showMeTheNumber = this.totalGames + 1;
+      console.log("draw: number games", this.totalGames, this.currentGame);
+
+      this.showNumberGame.innerText = this.currentGame;
 
       if (markMove === "X") {
         singleBlock.style.color = "blue";
@@ -387,6 +407,7 @@
       if (gaming.isArrayIncluded(this.winningCombinations, player.hits)) {
         domElement.innerText = player.addScore();
         this.playerTurnSignal.innerText = `${player.name} WON this game!`;
+
         this.winner = true;
       }
       return this.winner;
