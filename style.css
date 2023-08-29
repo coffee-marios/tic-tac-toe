@@ -386,7 +386,7 @@ body {
 
 #main {
     margin: auto;
-    width: 50%;
+    width: 40%;
     text-align: center;
     /* display: none; */
 }
@@ -494,6 +494,11 @@ div>#leftPlayer {
     font-size: 0.8rem;
     color: white;
     margin-bottom: 3rem;
+}
+
+.sideSettings:hover {
+    background-color: rgba(139, 0, 139, 0.6);
+
 }
 
 #sideButtons {
